@@ -4,17 +4,17 @@ from shapely.geometry import Polygon
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
 annotations_path = "/home/can/Desktop/Python/monkey-model/annotations/json"
-annotations_out_path = "/home/can/Desktop/Python/monkey-model/patch_annotations/xml"
+annotations_out_path = "patch_annotations/xml"
 patch_size = 1024
 step = 64
 
 os.makedirs(annotations_out_path, exist_ok=True)
 i = 1
-
+next_patch_id = 0
 
 def generate_patches(x_offset, y_offset):
     patches = []
-    patch_id = 0
+    patch_id = next_patch_id
     for y in range(min_y + y_offset, max_y, patch_size):
         for x in range(min_x + x_offset, max_x, patch_size):
             patch_box = Polygon(
@@ -39,6 +39,7 @@ for fileName in os.listdir(annotations_path):
         data = json.load(f)
     asap_annotation = ET.Element("ASAP_Annotations")
     annotations = ET.SubElement(asap_annotation, "Annotations")
+    next_patch_id = 0
     for roi in data["rois"]:
         roi_polygon = roi["polygon"]
         roi_shape = Polygon(roi_polygon)
@@ -54,6 +55,7 @@ for fileName in os.listdir(annotations_path):
                     max_patches = len(patches)
                     best_patches = patches.copy()
                     best_offsets = (x_offset, y_offset)
+        next_patch_id += len(best_patches)
         for patch in best_patches:
             centerAnnotation = ET.SubElement(annotations, "Annotation")
             centerAnnotation.set("Name", f"Center_{patch['id']}")
