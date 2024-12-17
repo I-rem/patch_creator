@@ -4,13 +4,14 @@ from shapely.geometry import Polygon
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
 annotations_path = "/home/can/Desktop/Python/monkey-model/annotations/json"
-annotations_out_path = "patch_annotations/xml"
+annotations_out_path = "/home/can/Desktop/Python/monkey-model/patch_annotations/xml"
 patch_size = 1024
 step = 64
 
 os.makedirs(annotations_out_path, exist_ok=True)
 i = 1
 next_patch_id = 0
+
 
 def generate_patches(x_offset, y_offset):
     patches = []
